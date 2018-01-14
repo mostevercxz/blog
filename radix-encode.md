@@ -1,19 +1,16 @@
-从进制转换角度来证明和实现 base64，base-n 编码。
+进制转换角度来实现 base64编码 以及任意 base-n编码
 
-### rfc 中 base64,base32,base16编码
+## 进制转换实现base64编码
 
-base64 字符集:
-编码核心思想：
-编码举例：love的编码
-6和8的最小公倍数
-填充字符情况：
+## n进制的加法
 
-base32字符集，填充字符情况
-综合举例
+## n进制的乘法
 
-### rfc base64 c++移位实现
+## n进制乘法优化
 
-https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64#C++
+## 重新实现 base64编码
+
+## 实现比特币 base58编码,base36编码
 
 ### The X/Open Portability Guide `l64a` 实现
 
@@ -45,3 +42,17 @@ glibc 并不能支持 任意二进制序列。
 
 1. 为什么要填充=，而非直接用进制转换？
 1. 如何解码？看有没有=号，看位数有多少位，是几的倍数？
+
+
+https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64#C++
+
+https://github.com/tkislan/base64/blob/master/base64.h
+
+https://stackoverflow.com/questions/4080988/why-does-base64-encoding-require-padding-if-the-input-length-is-not-divisible-by
+
+http://chimera.labs.oreilly.com/books/1234000001802/ch04.html#public_key_derivation
+
+
+https://code.tutsplus.com/tutorials/base-what-a-practical-introduction-to-base-encoding--net-27590
+
+https://en.wikipedia.org/wiki/Base36
