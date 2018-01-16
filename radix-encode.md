@@ -1,16 +1,29 @@
-进制转换角度来实现 base64编码 以及任意 base-n编码
+---
+title: 通过进制转换来实现 base64编码 以及 base-n编码(n<256)
+date: 2018/1/15 21:30:00
+---
 
-## 进制转换实现base64编码
+## 进制转换实现base64编码(Python3)
 
-## n进制的加法
+## n进制加n进制
 
-## n进制的乘法
+## n进制加10进制
 
-## n进制乘法优化
+## n进制乘10进制
 
-## 重新实现 base64编码
+## n进制乘n进制
 
-## 实现比特币 base58编码,base36编码
+## 加法效率对比,直接加末尾和逐位相加
+
+## 乘法效率对比,直接相乘和逐位相乘再相加
+
+## 实现 m进制数 转 n进制数
+
+秦九韶算法(霍纳算法,[Horner's Method](https://en.wikipedia.org/wiki/Horner%27s_method))
+
+## 实现比特币 base58编码
+
+## 实现 base-n 编码
 
 ### The X/Open Portability Guide `l64a` 实现
 
@@ -29,8 +42,6 @@ This encoding scheme is not standard. There are some other encoding methods whic
 ### 为什么被 base64 取代了？
 uu encode 需要额外的字节。
 glibc 并不能支持 任意二进制序列。
-
-## 从进制转换的角度看 base64 编码
 
 ## 进制转换的可行性证明
 
