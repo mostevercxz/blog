@@ -3,35 +3,28 @@ title: 通过进制转换来实现 base64编码 以及 base-n编码(n<256)
 date: 2018/1/15 21:30:00
 ---
 
-## n进制的表示形式
+本文主要尝试从进制转换的角度，来实现 base64编码，以及base-n编码。并实现m进制序列到n进制序列的转换函数。
 
-什么是记数系统？
+## 什么是n进制
 
-记数系统(记数法,数制)是一种按一致的方法使用数字(0-9)或其他符号来表示一组数(整数,实数)的数学记法。记数系统可以被看做允许字符串"11"(作为二进制符号)表示3,或者作为十进制符号表示11,或其他进制表示其他值的环境。该记法表示的数被称为值。
+什么是**记数系统**？
 
-理想的记数系统应当能够:
-有效地描述一组数(整数，实数)
-该组数内的每个数有唯一的表示(唯一的标准表示法)
-反映该组数的代数和算术结构
+**记数系统**(记数法,数制)是一种按一致的方法使用数字(0-9)或其他符号来表示一组数(整数,实数)的数学记法。记数系统可以被看做允许字符串"11"(作为二进制符号)表示3,或者作为十进制符号表示11,或其他进制表示其他值的环境。该记法表示的数被称为**值**。
 
-什么是按位记数系统？
+理想的**记数系统**应当能够:
+
+1. 有效地描述一组数(整数，实数)
+1. 该组数内的每个数有唯一的表示(唯一的标准表示法)
+1. 反映该组数的代数和算术结构
+
+什么是**按位记数系统**？
 区别于其他记数系统(罗马数字,I=1 V=5 X=10)，按位记数系统能使用同样的符号来表示不同数量级的数。
-
-A numeral system (or system of numeration) is a writing system for expressing numbers; that is, a mathematical notation for representing numbers of a given set, using digits or other symbols in a consistent manner.
-
-The number the numeral represents is called its value.
-
-Ideally, a numeral system will:
-
-Represent a useful set of numbers (e.g. all integers, or rational numbers)
-Give every number represented a unique representation (or at least a standard representation)
-Reflect the algebraic and arithmetic structure of the numbers.
 
 什么是底数(radix/base)？
 
-在按位记数系统里，底数(基数)指用来表示数的不重复数字(包括0在内)的个数。比如10进制记数系统的底数是10，因为它使用了0-9一共10个不重复数字。 在底数为b(b > 1)的按位记数系统中, 数字字符串"d1 … dn"代表的数为 `d1*b^(n−1) + d2*b^(n−2) + … + dn*b^0`, 其中 0 ≤ di < b.
+>在按位记数系统里，底数(基数)指用来表示数的不重复数字(包括0在内)的个数。比如10进制记数系统的底数是10，因为它使用了0-9一共10个不重复数字。 在底数为b(b > 1)的按位记数系统中, 数字字符串"d1 … dn"代表的数为 `d1*b^(n−1) + d2*b^(n−2) + … + dn*b^0`, 其中 0 ≤ di < b.
 
-什么是 n进制?
+什么是 **n进制**?
 n进制是数学中以n为底数的按位记数系统(positional number system). 由上面底数的定义可知，将b进制串转为数的方法: `d1*b^(n−1) + d2*b^(n−2) + … + dn*b^0`. 反过来,将数`val`转为b进制串的方法:
 
 ```text
@@ -41,7 +34,9 @@ d2 = val / b^(n-2) % b
 d1 = val / b^(n-1) % b = val / b^(n-1),因为 d1 < b
 ```
 
-因此想将n进制转为m进制，最自然的方法是算出n进制串代表的值，并按照上述算法将值转为m进制串。下面就用Python3(用 Python3 的原因是 Python3 可表示的数字是无上限的,方便验证思路) 来实现`n进制-->值-->m进制`:
+## 通过值相等实现n进制到m进制的转换
+
+想将n进制转为m进制，最自然的方法是算出n进制串代表的值，并按照上述算法将值转为m进制串。下面就用Python3(用 Python3 的原因是 Python3 可表示的数字是无上限的,方便验证思路) 来实现`n进制-->值-->m进制`:
 
 ```python
 import sys
@@ -62,10 +57,12 @@ def radix_m2n(mList, m, n):
 
     return nList
 
-print(radix_m2n([15,15], 16, 2) == [1,1,1,1,1,1,1,1])//运行结果应该为 True
+print(radix_m2n([15,15], 16, 2) == [1,1,1,1,1,1,1,1])//运行结果为 True
 ```
 
 ## n进制加n进制
+
+本小节在证明, 值为**d**的n进制数 `(dn,...,d1,d0)`加上值为**c**的n进制数 `(Cn,...,C1,C0)`等于n进制数 `(dn,...,d1,d0+c)`.若你已理解，可直接跳过本节.
 
 在思考n进制的加法时候，我发现我潜意识里觉得，n进制加法还是要以10进制加法为基础，要是没有了10进制的加法(1+1=2)，n进制加法就无法计算。但实际上，n进制加法，即2个n进制串所代表的值相加,和10进制是无关的，只是10进制可以方便地用来表示值而已。所以在8进制里 7+7=16,并不是先转为10进制加法 7+7=14,然后再将14转为8进制16，而是直接使用8进制进位规则 7+7=7+1+6=8+6=1*8^1+6=16.
 
@@ -92,6 +89,8 @@ print(radix_m2n([15,15], 16, 2) == [1,1,1,1,1,1,1,1])//运行结果应该为 Tru
 
 ## n进制乘n进制
 
+本小节在证明, 值为**d**的n进制数 `(dn,...,d1,d0)`乘以值为**c**的n进制数 `(Cn,...,C1,C0)`等于n进制数 `(c * dn,...,c * d1,c * d0)`.若你已理解，可直接跳过本节.
+
 两个n进制数n1,n2相乘，实际上就等于n2个n1相加，因此乘法运算可以用加法来计算。
 
 8进制的乘法表如下:
@@ -117,7 +116,7 @@ n进制乘n进制，实际上等于 n进制每一位都乘以n进制代表的值
 
 ![b进制数相乘证明](data:image/png;base64,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)
 
-为啥n进制和10进制有关系呢？
+注意，上面的证明是从值相等来证明的，实际上可以按位展开，证明 (dn,...,d1,d0) * (cn,...,c1,c0) 的位展开，和 (valc * dn,...valc * d1, valc * d0)的位展开相同。
 
 ## 进制转换实现base64编码(Python3)
 
@@ -164,9 +163,17 @@ print(shift_base64([ord(x) for x in 'love']))//输出 bG92ZQ==
 
 经测试，进制转换实现的 `shift_base64()` 输出结果和非进制转换的 base64编码 结果是一样的。但是在C/Lua等语言中，代表数字的常用类型最多只有8个字节，即64位的，计算n进制串代表的值时候会溢出。要实现进制转换，有没有不需要计算值的方法呢？
 
-## 256进制转成58进制,c++实现比特币base58编码
+## 256进制转成58进制(比特币base58编码)
 
-下面我们就要用n进制的加法和乘法，来实现256进制到58进制的转换。记256进制数为(dn,...,d1,d0),0<=di<256,值为val256,则 `val256=dn*256^n+...+d1*256+d0`.想求val256的58进制数，我们可以分别计算出 dn,...,d1,d0一共n+1个数的58进制数，再算出 256^n,256^(n-1)...,256一共n个数的58进制数(一共需要进行n*(n+1)/2次58进制乘法)，再进行n次乘法分别相乘,再进行n次加法，最后得到了val256的58进制串。有没有效率更高的方法呢？观察val256的计算公式，可以变换为如下格式(霍纳格式[Horner's Method](https://en.wikipedia.org/wiki/Horner%27s_method))：
+本节主要基于b进制加法和b进制乘法的性质，尝试实现256进制到58进制的转换函数。之所以选择256到58，是因为比特币使用的编码中含有 base58编码，其中部分代码可以用来参考和对比。
+
+记256进制数为(dn,...,d1,d0),0<=di<256,值为val256,则 `val256=dn*256^n+...+d1*256+d0`.想求val256的58进制数，我们可以分别计算出 `dn*256^n`, ... ,`d1*256`,`d0`一共n+1个数的58进制数，再将n+1个数的58进制数按位相加。
+
+对于`dn*256^n`，我们可以先计算出 `dn` 的58进制数，再将256乘以 `dn` 的二进制数计算出 `dn*256` 的58进制数。**假设`dn`，`d(n-1)`,...,`d0`的58进制数仅有1位**，那么 `dn*256` 的58进制数至少有2位，依次类推，`dn*256^n`的58进制数至少有n+1位。整个计算过程使用了至少 `1+2+...+(n+1)=(n+1)*(n+2)` 次求余运算，至少 `0+1+2+..+n=n*(n+1)/2` 次乘法运算。 对于 `d(n-1)*256^(n-1)`,可使用同样方法类推。
+
+要求出一共n+1个数的58进制数，使用的乘法运算次数为 n+1 个数乘法运算的次数之和，使用的求余运算次数为 n+1 个数求余运算的次数之和，除此之外，因为`dn*256`至少有 n+1 位,一共有n+1个数，至少需使用 (n+1)*(n+1)次加法运算。
+
+有没有效率更高的方法呢？观察val256的计算公式，可以变换为如下格式(霍纳格式[Horner's Method](https://en.wikipedia.org/wiki/Horner%27s_method))：
 
 ```text
 val256 = dn * 256^n+...+d1 * 256+d0
@@ -176,30 +183,113 @@ val256 = dn * 256^n+...+d1 * 256+d0
 
 若是求出了 `d1 + 256*(d2+...+256*(d(n-1)+256*dn))` 的58进制数 (cn,...,c1,c0),那么依据上节n进制加法和乘法得出的结论，val256 的58进制数为 (256*cn,...,256*c1,256*c0+d0)，对该数进行进位处理，最后保证每一位都是 [0,58) 范围内的数，即可得到 val256 的58进制数。
 
-2种方法对比:
-机器指令，消耗的CPU时钟数。
+同样，**假设`dn`，`d(n-1)`,...,`d0`的58进制数仅有1位**，计算 `dn`需要1次求余运算。此时 `d(n-1)+256*dn` 的58进制数至少为2位，至多为3位,需要1次乘法，1次加法，至多3次求余运算。为了确定该方法需要运算次数的上确界，不妨假设从 `dn` 开始，每次运算后的58进制数都比之前多2位，比如 `d(n-1)+256*dn` 的58进制数为3位，`d(n-2)+256*(d(n-1)+256*dn)`的58进制数为5位。因此该方法需要至多n次加法，`1+3+5+...+(2n+1)=n*(1+(2n+1))/2=n*(n+1)` 次乘法,`1+3+5+...+(2n+1)+(2n+3)=n*(n+2)` 次求余运算。 该方法的上确界 小于 第一种方法的下确界，即该方法最多需要的运算次数，都小于第一种方法最少需要的运算次数，因此该方法的效率更高。
 
-## 实现 m进制数 转 n进制数
+更重要的是，当 `n=(unsigned int)-1` 时候,第一种方法在执行加法运算时候，仍然会溢出。下面的代码使用了第二种方法实现 256进制 到 58进制的转换(部分代码，完整版见github)：
+
+```c++
+void convert256to58(std::vector<unsigned char> &input, std::vector<unsigned char> &output)
+{
+	// 计算下需要多大空间来存储输出的58进制串
+	uint32_t outputNeedLen = std::ceil(input.size() * std::log2(256) / std::log2(58));
+	std::vector<unsigned char> tmpOut;
+	tmpOut.resize(outputNeedLen, 0);
+	int length = 0;
+	for (auto & thisBitDigit : input)
+	{
+		// 计算 d(n-1)+256*dn,将 *it 加到最后一位,然后依次往上进位
+		int carry = 0;
+		int tmpLen = 0;
+		carry += thisBitDigit;
+		// 若中间有0的位,此时仍需要计算 0+256*dn的值
+		for (auto bitIt = tmpOut.rbegin(); 
+				bitIt != tmpOut.rend() && (carry != 0 || carry < length); ++bitIt, ++tmpLen)
+		{
+			carry += 256 * (*bitIt);
+			*bitIt = carry % 58;//计算最新的余数
+			carry /= 58;//需要往上进位的除数
+		}
+		length = tmpLen;
+	}
+
+    // 去掉最前面为0的位
+	auto it = tmpOut.begin();
+	while (*it == 0) {++it;}//不能直接写*it++,会导致第一个非0的位被忽略
+    
+	std::copy(it, tmpOut.end(), std::back_inserter(output));
+}
+```
 
 ## 将二进制数据编码为 base-n编码,1<n<256
 
-base-n编码，将256进制转为 n进制.测试下 base64编码，对比下结果是否正确。
+有了256进制转58进制的函数，我们只需要将其中的58替换为n即可。但要注意，base64,base32位数不足时，需要补位并增加填充字符。同上述 Python3 的实现，可以在进制转换函数调用前，先计算下需要填充的字符，以及原二进制数需要扩大的倍数。
 
-## FAQ
+## 实现 m进制数 转 n进制数
 
-1. 为什么要填充=，而非直接用进制转换？
-1. 如何解码？看有没有=号，看位数有多少位，是几的倍数？
+有了256进制转58进制的函数，可以在此基础上实现 m进制数转n进制的代码。部分代码如下(完整版见github):
 
+```c++
+void m2n(const std::vector<unsigned char> &input, const uint32_t m
+		, std::vector<unsigned char> &output, const uint32_t n)
+{
+	// 计算下需要多大空间来存储输出的58进制串
+	uint32_t outputNeedLen = std::ceil(input.size() * std::log2(m) / std::log2(n));
+	std::vector<unsigned char> tmpOut;
+	tmpOut.resize(outputNeedLen, 0);
+	int length = 0;
+	for (auto & thisBitDigit : input)
+	{
+		// 计算 d(n-1)+256*dn,将 *it 加到最后一位,然后依次往上进位
+		int carry = 0;
+		int tmpLen = 0;
+		carry += thisBitDigit;
+		// 若中间有0的位,此时仍需要计算 0+256*dn的值
+		for (auto bitIt = tmpOut.rbegin(); 
+				bitIt != tmpOut.rend() && (carry != 0 || carry < length); ++bitIt, ++tmpLen)
+		{
+			carry += m * (*bitIt);
+			*bitIt = carry % n;//计算最新的余数
+			carry /= n;//需要往上进位的除数
+		}
+		length = tmpLen;
+	}
 
-https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64#C++
+	auto it = tmpOut.begin();
+	while (*it == 0) {++it;}//不能直接写*it++,会导致第一个非0的位被忽略
 
-https://github.com/tkislan/base64/blob/master/base64.h
+	std::copy(it, tmpOut.end(), std::back_inserter(output));
+}
+```
 
-https://stackoverflow.com/questions/4080988/why-does-base64-encoding-require-padding-if-the-input-length-is-not-divisible-by
+编译成 `m2n`,并测试下运行是否正确:
 
-http://chimera.labs.oreilly.com/books/1234000001802/ch04.html#public_key_derivation
+```bash
+giant@test:~/base64$ ./m2n 2 8 1,1,1,1
+,1,7
+giant@test:~/base64$ ./m2n 2 8 1,1,1,1,1
+,3,7
+giant@test:~/base64$ ./m2n 2 8 1,1,1,1,1,1
+,7,7
+giant@test:~/base64$ ./m2n 2 8   1,1,1,1,1,1,1,1,1
+,7,7,7
+giant@test:~/base64$ ./m2n 2 256 1,1,1,1,1,1,1,1,1
+,1,255
+giant@test:~/base64$ ./m2n 2 256 1,1,1,1
+,15
+```
 
+## 为什么base64编码要填充=，而非直接用进制转换？
 
-https://code.tutsplus.com/tutorials/base-what-a-practical-introduction-to-base-encoding--net-27590
+这个问题 [StackOverflow](https://stackoverflow.com/questions/4080988/why-does-base64-encoding-require-padding-if-the-input-length-is-not-divisible-by) 上已经有人问过了，这里总结下原因:
 
-https://en.wikipedia.org/wiki/Base36
+1. 若将2个各自带填充字符的base64编码字符串，不用填充字符相连，则无法从相连后的字符串还原原本的字符串。 比如 `go`的base64编码为 `Z28=`,`to`的base64编码为 `dG8=`,而从 `Z28Dg8` base64解码出的原字符为 `go\x03\x83`
+1. 为什么不设计成协议的头2/4个字节保存本编码串的长度呢？若要分段编码很小的视频流，与填充字符相比，可能会浪费更多的字节。因为填充字符至多填充2个，而带长度的协议里，每个编码串至少占2个甚至更多字节。
+
+## References:
+
+1. https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64#C++
+1. https://github.com/tkislan/base64/blob/master/base64.h
+1. https://stackoverflow.com/questions/4080988/why-does-base64-encoding-require-padding-if-the-input-length-is-not-divisible-by
+1. http://chimera.labs.oreilly.com/books/1234000001802/ch04.html#public_key_derivation
+1. https://code.tutsplus.com/tutorials/base-what-a-practical-introduction-to-base-encoding--net-27590
+1. https://en.wikipedia.org/wiki/Base36
