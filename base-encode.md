@@ -28,6 +28,8 @@ In computers, encoding is the process of putting a sequence of characters (lette
 
 由上面的文字可以提炼出，编码是将一系列字符处理为另一系列字符的过程。下面就来介绍3种和base64有关的编码方式。
 
+<!-- more -->
+
 ## l64a 编码函数
 
 ### l64a 描述

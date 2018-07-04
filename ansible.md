@@ -1,4 +1,6 @@
-# ansible 一键安装nginx+php7并部署全栈https
+---
+title: ansible 一键安装nginx+php7并部署全栈https
+---
 
 ## 实现效果
 
@@ -16,8 +18,6 @@ ansible 是一个开源的非常简单的IT自动化运维工具，基于 Python
 * ansible-playbook，用来执行 playbook 中定义的任务集，配合 ansible role 可以实现复杂的运维功能
 * ansible-doc,用来防忘记，查询文档
 * ansible-galaxy，用来创建，下载角色
-
-Ansible tower 要花钱，没用过，从官网上看是一个带报表，鼠标点点就能完成运维的 web 产品。现阶段没有那么多机器和任务，暂时也没打算使用 ansible tower。
 
 ## ansible 解决了什么问题
 
@@ -42,6 +42,7 @@ xxx ALL=(ALL) ALL
 ```
 
 同样的命令，同样的流程，敲2遍的时候，都已经快吐了！！敲完第3遍，简直不能忍，于是在网上查运维自动化工具，找到了ansible并且在一个无人的周末，倒腾了一个一键建站的 ansible playbook.申请了一台阿里云，然后使用命令 `ansible-playbook -i ./hosts -v --ask-pass site.yml` 一键搞定可访问的 https 网站。爽！！
+<!-- more -->
 
 ### ansible 解决的问题
 
