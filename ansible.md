@@ -4,7 +4,15 @@ title: ansible 一键安装nginx+php7并部署全栈https
 
 ## 实现效果
 
-我在本地测试好了网站(nginx+php7)，申请了一台云服务器，一条命令将网站部署到裸机上并实现全站 https.
+我在本地写好并测试好网站，去 godaddy 购买了一个域名，申请了一台云服务器，然后本地执行
+
+```bash
+git clone https://github.com/mostevercxz/oneline_deploy_https_website.git && cd oneline_deploy_https_website
+pip install ansible
+ansible-playbook -i ./hosts -v --ask-pass nginx_php7.yml
+```
+
+敲完命令，喝口茶，看看风景，然后浏览器中输入 https 网址，就能访问了！
 
 ## ansible 是什么
 
